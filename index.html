@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Для самой лучшей</title>
     <style>
         * {
@@ -10,16 +10,29 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            touch-action: manipulation;
         }
 
         body {
-            font-family: 'Arial Black', 'Segoe UI', sans-serif;
-            background: #000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             color: white;
             position: relative;
-            touch-action: none;
+            cursor: pointer;
         }
 
         /* Простой стартовый экран */
@@ -37,6 +50,7 @@
             padding: 20px;
             z-index: 100;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: opacity 0.8s ease;
         }
 
         .sun-icon {
@@ -53,6 +67,7 @@
             color: #FFD700;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             line-height: 1.3;
+            padding: 0 20px;
         }
 
         .tap-instruction {
@@ -65,6 +80,11 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+
+        .tap-instruction:active {
+            transform: scale(0.95);
         }
 
         /* Стадии анимации */
@@ -148,7 +168,7 @@
             transition: background 0.3s ease;
         }
 
-        /* Фаза 4: Комплименты (3 секунды) */
+        /* Фаза 4: Комплименты (3 секунды) - ЦЕНТРИРОВАННЫЕ */
         #phase4 {
             z-index: 13;
             background: #000;
@@ -159,7 +179,20 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .compliments-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .compliment {
@@ -168,7 +201,7 @@
             font-weight: bold;
             text-align: center;
             opacity: 0;
-            animation: floatUp 2.5s forwards;
+            animation: floatUpCentered 2.5s forwards;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
             padding: 15px 25px;
             border-radius: 15px;
@@ -178,8 +211,12 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
             max-width: 90%;
             word-wrap: break-word;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
         }
 
+        /* Цвета для комплиментов */
         .compliment.love {
             color: #FF69B4;
             border-color: #FF69B4;
@@ -273,6 +310,21 @@
             text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
         }
 
+        /* Таймер */
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 10px;
+            z-index: 999;
+            display: none;
+            font-weight: bold;
+        }
+
         /* Анимации */
         @keyframes sunPulse {
             0% {
@@ -351,22 +403,23 @@
             }
         }
 
-        @keyframes floatUp {
+        /* НОВАЯ АНИМАЦИЯ ДЛЯ ЦЕНТРИРОВАННЫХ КОМПЛИМЕНТОВ */
+        @keyframes floatUpCentered {
             0% {
                 opacity: 0;
-                transform: translateY(100px) scale(0.5);
+                transform: translateX(-50%) translateY(50px) scale(0.8);
             }
-            20% {
+            15% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateX(-50%) translateY(0) scale(1);
             }
-            80% {
+            85% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateX(-50%) translateY(0) scale(1);
             }
             100% {
                 opacity: 0;
-                transform: translateY(-100px) scale(0.5);
+                transform: translateX(-50%) translateY(-50px) scale(0.8);
             }
         }
 
@@ -397,6 +450,7 @@
             .compliment {
                 font-size: 1.6rem;
                 padding: 12px 20px;
+                max-width: 85%;
             }
             
             .final-message h2 {
@@ -409,6 +463,24 @@
             
             .hearts {
                 font-size: 2.5rem;
+            }
+            
+            .timer {
+                font-size: 1.2rem;
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .compliment {
+                font-size: 1.4rem;
+                padding: 10px 15px;
+            }
+            
+            .start-text {
+                font-size: 1.8rem;
             }
         }
 
@@ -432,12 +504,18 @@
                 font-size: 1.8rem;
                 margin-bottom: 20px;
             }
+            
+            .compliment {
+                font-size: 1.5rem;
+                padding: 10px 15px;
+            }
         }
 
         @media (orientation: landscape) and (max-height: 500px) {
             .start-screen {
                 flex-direction: row;
                 gap: 30px;
+                flex-wrap: wrap;
             }
             
             .sun-icon {
@@ -453,11 +531,24 @@
             .tap-instruction {
                 margin-top: 0;
                 font-size: 1rem;
+                padding: 10px 15px;
             }
             
             .compliment {
                 font-size: 1.4rem;
-                padding: 8px 15px;
+                padding: 8px 12px;
+            }
+            
+            .compliments-wrapper {
+                height: 90%;
+            }
+        }
+
+        /* Для очень широких экранов */
+        @media (min-width: 1200px) {
+            .compliment {
+                font-size: 2.2rem;
+                padding: 18px 30px;
             }
         }
     </style>
@@ -469,11 +560,14 @@
             <i class="fas fa-sun"></i>
         </div>
         <div class="start-text">Нажми на экран, солнышко)</div>
-        <div class="tap-instruction">
+        <div class="tap-instruction" id="tapButton">
             <i class="fas fa-hand-point-up"></i>
             Коснись экрана
         </div>
     </div>
+
+    <!-- Таймер -->
+    <div class="timer" id="timer">00:10</div>
 
     <!-- Фаза 1: Накопление энергии (3 секунды) -->
     <div class="phase" id="phase1">
@@ -481,8 +575,6 @@
         <div class="energy-ring" style="animation-delay: 0s;"></div>
         <div class="energy-ring" style="animation-delay: 0.5s;"></div>
         <div class="energy-ring" style="animation-delay: 1s;"></div>
-        <div class="energy-ring" style="animation-delay: 1.5s;"></div>
-        <div class="energy-ring" style="animation-delay: 2s;"></div>
     </div>
 
     <!-- Фаза 2: Превышение критической массы (2 секунды) -->
@@ -495,9 +587,11 @@
         <div class="white-flash" id="whiteFlash"></div>
     </div>
 
-    <!-- Фаза 4: Комплименты (3 секунды) -->
+    <!-- Фаза 4: Комплименты (3 секунды) - ЦЕНТРИРОВАННЫЕ -->
     <div class="phase" id="phase4">
-        <div class="compliments-container" id="complimentsContainer"></div>
+        <div class="compliments-container">
+            <div class="compliments-wrapper" id="complimentsWrapper"></div>
+        </div>
     </div>
 
     <!-- Фаза 5: Мощный взрыв (0.5 секунды) -->
@@ -517,13 +611,15 @@
     </div>
 
     <!-- Font Awesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const startScreen = document.getElementById('startScreen');
+            const tapButton = document.getElementById('tapButton');
+            const timerElement = document.getElementById('timer');
             const whiteFlash = document.getElementById('whiteFlash');
-            const complimentsContainer = document.getElementById('complimentsContainer');
+            const complimentsWrapper = document.getElementById('complimentsWrapper');
             const finalMessage = document.querySelector('.final-message');
             
             const phases = {
@@ -537,7 +633,7 @@
             
             let animationRunning = false;
             
-            // Список комплиментов
+            // Список комплиментов - ОТЦЕНТРИРОВАННЫЕ
             const compliments = [
                 { text: "Ты самая красивая!", class: "beauty" },
                 { text: "Ты невероятно умная!", class: "amazing" },
@@ -553,77 +649,96 @@
                 { text: "Ты просто ангел!", class: "angel" },
                 { text: "Ты самая милая!", class: "love" },
                 { text: "Ты уникальна!", class: "amazing" },
-                { text: "Ты моя принцесса!", class: "love" }
+                { text: "Ты моя принцесса!", class: "love" },
+                { text: "Ты самая лучшая!", class: "perfect" },
+                { text: "Ты невероятно добрая!", class: "angel" },
+                { text: "Твоё сердце золотое!", class: "beauty" },
+                { text: "Ты моя мечта!", class: "love" },
+                { text: "Ты самая замечательная!", class: "amazing" }
             ];
             
-            // Таймер для отображения времени
-            let timerElement = document.createElement('div');
-            timerElement.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                font-size: 1.5rem;
-                color: white;
-                background: rgba(0,0,0,0.5);
-                padding: 10px 15px;
-                border-radius: 10px;
-                z-index: 999;
-                display: none;
-            `;
-            document.body.appendChild(timerElement);
+            // Функция для мобильных устройств
+            function isTouchDevice() {
+                return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            }
             
-            // Запуск 10-секундной анимации
-            function start10SecondAnimation() {
+            // Основная функция запуска анимации
+            function startAnimation() {
                 if (animationRunning) return;
+                
+                console.log("Запуск анимации...");
                 animationRunning = true;
                 
-                // Прячем стартовый экран
+                // Вибрация для мобильных
+                if (navigator.vibrate) {
+                    navigator.vibrate([50]);
+                }
+                
+                // Плавно скрываем стартовый экран
                 startScreen.style.opacity = '0';
-                startScreen.style.visibility = 'hidden';
                 
-                // Показываем таймер
-                timerElement.style.display = 'block';
-                let seconds = 10;
-                timerElement.textContent = `00:${seconds.toString().padStart(2, '0')}`;
-                
-                const timerInterval = setInterval(() => {
-                    seconds--;
+                setTimeout(() => {
+                    startScreen.style.display = 'none';
+                    
+                    // Показываем таймер
+                    timerElement.style.display = 'block';
+                    let seconds = 10;
                     timerElement.textContent = `00:${seconds.toString().padStart(2, '0')}`;
                     
-                    if (seconds <= 0) {
-                        clearInterval(timerInterval);
-                        setTimeout(() => {
-                            timerElement.style.display = 'none';
-                        }, 1000);
-                    }
-                }, 1000);
-                
+                    // Таймер обратного отсчета
+                    const timerInterval = setInterval(() => {
+                        seconds--;
+                        timerElement.textContent = `00:${seconds.toString().padStart(2, '0')}`;
+                        
+                        if (seconds <= 0) {
+                            clearInterval(timerInterval);
+                            setTimeout(() => {
+                                timerElement.style.display = 'none';
+                            }, 1000);
+                        }
+                    }, 1000);
+                    
+                    // Запускаем 10-секундную анимацию
+                    start10SecondAnimation();
+                    
+                }, 800);
+            }
+            
+            // 10-секундная анимация
+            function start10SecondAnimation() {
                 // Фаза 1: Накопление энергии (0-3 секунды)
                 startPhase(1);
+                
                 setTimeout(() => {
                     // Фаза 2: Превышение критической массы (3-5 секунды)
                     startPhase(2);
+                    
                     setTimeout(() => {
                         // Фаза 3: Белая вспышка (5-6 секунды)
                         startPhase(3);
+                        
                         setTimeout(() => {
                             // Фаза 4: Комплименты (6-9 секунды)
                             startPhase(4);
+                            
                             setTimeout(() => {
                                 // Фаза 5: Мощный взрыв (9-9.5 секунды)
                                 startPhase(5);
+                                
                                 setTimeout(() => {
                                     // Фаза 6: Финальная надпись (9.5-10 секунды)
                                     startPhase(6);
-                                }, 500); // Взрыв длится 0.5 секунды
-                            }, 3000); // Комплименты длятся 3 секунды
-                        }, 1000); // Белая вспышка длится 1 секунду
-                    }, 2000); // Критическая масса длится 2 секунды
-                }, 3000); // Накопление энергии длится 3 секунды
+                                }, 500);
+                            }, 3000);
+                        }, 1000);
+                    }, 2000);
+                }, 3000);
             }
             
             // Запуск конкретной фазы
             function startPhase(phaseNum) {
+                console.log(`Запуск фазы ${phaseNum}`);
+                
                 // Скрываем все фазы
                 Object.values(phases).forEach(phase => {
                     phase.classList.remove('active');
@@ -657,51 +772,36 @@
             
             // Фаза 1: Накопление энергии (3 секунды)
             function startPhase1() {
-                // Создаем частицы энергии
-                createEnergyParticles(80);
-                
-                // Звук нарастающего гула
+                createEnergyParticles(50);
                 playPhase1Sound();
             }
             
             // Фаза 2: Превышение критической массы (2 секунды)
             function startPhase2() {
-                // Создаем энергетические щупальца
                 createEnergyTendrils();
-                
-                // Звук нарастающей угрозы
                 playPhase2Sound();
             }
             
             // Фаза 3: Белая вспышка (1 секунда)
             function startPhase3() {
-                // Белая вспышка
                 whiteFlash.style.background = 'rgba(255, 255, 255, 1)';
                 
-                // Убираем белую вспышку через 0.3 секунды
                 setTimeout(() => {
                     whiteFlash.style.background = 'rgba(255, 255, 255, 0)';
                 }, 300);
                 
-                // Звук вспышки
                 playPhase3Sound();
             }
             
-            // Фаза 4: Комплименты (3 секунды)
+            // Фаза 4: Комплименты (3 секунды) - ЦЕНТРИРОВАННЫЕ
             function startPhase4() {
-                // Создаем комплименты
-                createCompliments();
-                
-                // Звук появления комплиментов
+                createCenteredCompliments();
                 playPhase4Sound();
             }
             
             // Фаза 5: Мощный взрыв (0.5 секунды)
             function startPhase5() {
-                // Создаем мощный взрыв
-                createExplosionParticles(200);
-                
-                // Звук взрывной волны
+                createExplosionParticles(150);
                 playPhase5Sound();
             }
             
@@ -709,11 +809,8 @@
             function startPhase6() {
                 setTimeout(() => {
                     finalMessage.classList.add('active');
-                    
-                    // Финальный звук
                     playPhase6Sound();
                     
-                    // Вибрация для мобильных
                     if (navigator.vibrate) {
                         navigator.vibrate([100, 50, 100, 50, 200]);
                     }
@@ -725,58 +822,54 @@
                 const phase1 = phases[1];
                 
                 for (let i = 0; i < count; i++) {
-                    const particle = document.createElement('div');
-                    particle.style.cssText = `
-                        position: absolute;
-                        width: 10px;
-                        height: 10px;
-                        background: #FFD700;
-                        border-radius: 50%;
-                        box-shadow: 0 0 15px #FFD700;
-                        opacity: 0;
-                    `;
-                    
-                    // Случайная позиция вокруг центра
-                    const angle = Math.random() * Math.PI * 2;
-                    const distance = Math.random() * 300 + 100;
-                    const x = Math.cos(angle) * distance + window.innerWidth / 2;
-                    const y = Math.sin(angle) * distance + window.innerHeight / 2;
-                    
-                    particle.style.left = `${x}px`;
-                    particle.style.top = `${y}px`;
-                    
-                    // Анимация притяжения к центру
-                    const animation = particle.animate([
-                        { transform: 'scale(1)', opacity: 1 },
-                        { transform: 'scale(0)', opacity: 0, left: `${window.innerWidth / 2}px`, top: `${window.innerHeight / 2}px` }
-                    ], {
-                        duration: Math.random() * 2000 + 1000,
-                        delay: Math.random() * 1000,
-                        easing: 'cubic-bezier(0.5, 0, 0.5, 1)'
-                    });
-                    
-                    phase1.appendChild(particle);
-                    
-                    // Удаление после анимации
-                    animation.onfinish = () => {
-                        if (particle.parentNode) {
-                            particle.remove();
-                        }
-                    };
+                    setTimeout(() => {
+                        const particle = document.createElement('div');
+                        particle.style.cssText = `
+                            position: absolute;
+                            width: 8px;
+                            height: 8px;
+                            background: #FFD700;
+                            border-radius: 50%;
+                            box-shadow: 0 0 10px #FFD700;
+                            opacity: 0;
+                        `;
+                        
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = Math.random() * 200 + 50;
+                        const x = Math.cos(angle) * distance + window.innerWidth / 2;
+                        const y = Math.sin(angle) * distance + window.innerHeight / 2;
+                        
+                        particle.style.left = `${x}px`;
+                        particle.style.top = `${y}px`;
+                        
+                        const animation = particle.animate([
+                            { transform: 'scale(1)', opacity: 1 },
+                            { transform: 'scale(0)', opacity: 0, left: `${window.innerWidth / 2}px`, top: `${window.innerHeight / 2}px` }
+                        ], {
+                            duration: 2000,
+                            easing: 'cubic-bezier(0.5, 0, 0.5, 1)'
+                        });
+                        
+                        phase1.appendChild(particle);
+                        
+                        animation.onfinish = () => {
+                            if (particle.parentNode) particle.remove();
+                        };
+                    }, i * 50);
                 }
             }
             
             // Создание энергетических щупалец
             function createEnergyTendrils() {
                 const phase2 = phases[2];
-                const tendrilCount = 20;
+                const tendrilCount = 12;
                 
                 for (let i = 0; i < tendrilCount; i++) {
                     const tendril = document.createElement('div');
                     tendril.style.cssText = `
                         position: absolute;
                         width: 3px;
-                        height: 150px;
+                        height: 100px;
                         background: linear-gradient(to top, transparent, #FF4500);
                         top: 50%;
                         left: 50%;
@@ -787,15 +880,14 @@
                     `;
                     
                     const angle = (360 / tendrilCount) * i;
-                    tendril.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-75px)`;
+                    tendril.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-50px)`;
                     
                     phase2.appendChild(tendril);
                     
-                    // Анимация щупальца
                     tendril.animate([
-                        { height: '150px', opacity: 0.8 },
-                        { height: '250px', opacity: 1 },
-                        { height: '150px', opacity: 0.8 }
+                        { height: '100px', opacity: 0.8 },
+                        { height: '180px', opacity: 1 },
+                        { height: '100px', opacity: 0.8 }
                     ], {
                         duration: 1000,
                         delay: i * 50,
@@ -805,13 +897,13 @@
                 }
             }
             
-            // Создание комплиментов
-            function createCompliments() {
-                // Выбираем 12 случайных комплиментов
+            // СОЗДАНИЕ ЦЕНТРИРОВАННЫХ КОМПЛИМЕНТОВ
+            function createCenteredCompliments() {
+                // Выбираем 10 случайных комплиментов
                 const selectedCompliments = [];
                 const usedIndices = new Set();
                 
-                while (selectedCompliments.length < 12 && selectedCompliments.length < compliments.length) {
+                while (selectedCompliments.length < 10 && selectedCompliments.length < compliments.length) {
                     const randomIndex = Math.floor(Math.random() * compliments.length);
                     if (!usedIndices.has(randomIndex)) {
                         selectedCompliments.push(compliments[randomIndex]);
@@ -819,46 +911,45 @@
                     }
                 }
                 
-                // Создаем элементы для каждого комплимента
+                // Позиции по вертикали для комплиментов
+                const verticalPositions = [
+                    '10%', '15%', '20%', '25%', '30%', 
+                    '70%', '75%', '80%', '85%', '90%'
+                ];
+                
+                // Перемешиваем позиции
+                verticalPositions.sort(() => Math.random() - 0.5);
+                
+                // Создаем комплименты в центре экрана
                 selectedCompliments.forEach((compliment, index) => {
                     setTimeout(() => {
-                        createComplimentElement(compliment, index);
-                    }, index * 250); // Появление с задержкой 250мс
+                        createCenteredComplimentElement(compliment, verticalPositions[index % verticalPositions.length]);
+                    }, index * 280); // Интервал 280мс между появлением
                 });
             }
             
-            // Создание элемента комплимента
-            function createComplimentElement(compliment, index) {
+            // Создание элемента центрированного комплимента
+            function createCenteredComplimentElement(compliment, verticalPosition) {
                 const element = document.createElement('div');
                 element.classList.add('compliment', compliment.class);
                 element.textContent = compliment.text;
                 
-                // Позиция на экране
-                const isLandscape = window.innerWidth > window.innerHeight;
-                let x, y;
+                // Центрируем по горизонтали, позиция по вертикали задается параметром
+                element.style.top = verticalPosition;
                 
-                if (isLandscape) {
-                    x = Math.random() * (window.innerWidth - 300) + 150;
-                    y = Math.random() * (window.innerHeight - 80) + 40;
-                } else {
-                    x = Math.random() * (window.innerWidth - 200) + 100;
-                    y = Math.random() * (window.innerHeight - 100) + 50;
-                }
+                // Случайный небольшой сдвиг влево для естественности (от -20px до +20px)
+                const randomOffset = (Math.random() * 40 - 20);
                 
-                element.style.left = `${x}px`;
-                element.style.top = `${y}px`;
+                complimentsWrapper.appendChild(element);
                 
-                // Случайный размер
-                const size = Math.random() * 0.4 + 0.8;
-                element.style.fontSize = `${2 * size}rem`;
-                
-                complimentsContainer.appendChild(element);
+                // Добавляем небольшой случайный сдвиг влево/вправо для разнообразия
+                setTimeout(() => {
+                    element.style.transform = `translateX(calc(-50% + ${randomOffset}px))`;
+                }, 10);
                 
                 // Удаляем элемент после анимации
                 setTimeout(() => {
-                    if (element.parentNode) {
-                        element.remove();
-                    }
+                    if (element.parentNode) element.remove();
                 }, 2500);
             }
             
@@ -871,24 +962,22 @@
                     const particle = document.createElement('div');
                     particle.classList.add('explosion-particle');
                     
-                    // Параметры
-                    const size = Math.random() * 20 + 5;
+                    const size = Math.random() * 15 + 5;
                     const color = colors[Math.floor(Math.random() * colors.length)];
                     const x = window.innerWidth / 2;
                     const y = window.innerHeight / 2;
                     const angle = Math.random() * Math.PI * 2;
-                    const distance = Math.random() * 1000 + 300;
+                    const distance = Math.random() * 600 + 200;
                     
                     particle.style.width = `${size}px`;
                     particle.style.height = `${size}px`;
                     particle.style.backgroundColor = color;
                     particle.style.left = `${x}px`;
                     particle.style.top = `${y}px`;
-                    particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+                    particle.style.boxShadow = `0 0 ${size * 1.5}px ${color}`;
                     
                     phase5.appendChild(particle);
                     
-                    // Анимация разлета частиц
                     const animation = particle.animate([
                         { 
                             opacity: 1,
@@ -899,77 +988,67 @@
                             transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0.1)`,
                         }
                     ], {
-                        duration: Math.random() * 600 + 400,
+                        duration: 500 + Math.random() * 300,
                         easing: 'cubic-bezier(0.2, 0.8, 0.4, 1)'
                     });
                     
-                    // Удаление после анимации
                     animation.onfinish = () => {
-                        if (particle.parentNode) {
-                            particle.remove();
-                        }
+                        if (particle.parentNode) particle.remove();
                     };
                 }
             }
             
-            // Звуковые эффекты (с обработкой ошибок для мобильных)
+            // Звуковые эффекты
             function playPhase1Sound() {
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    
                     const oscillator = audioContext.createOscillator();
                     oscillator.type = 'sine';
                     oscillator.frequency.setValueAtTime(120, audioContext.currentTime);
-                    oscillator.frequency.linearRampToValueAtTime(280, audioContext.currentTime + 3);
+                    oscillator.frequency.linearRampToValueAtTime(250, audioContext.currentTime + 3);
                     
                     const gainNode = audioContext.createGain();
-                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 3);
+                    gainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 3);
                     
                     oscillator.connect(gainNode);
                     gainNode.connect(audioContext.destination);
                     
                     oscillator.start();
                     oscillator.stop(audioContext.currentTime + 3);
-                } catch (e) {
-                    console.log("Аудио не поддерживается");
-                }
+                } catch(e) {}
             }
             
             function playPhase2Sound() {
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    
                     const oscillator = audioContext.createOscillator();
                     oscillator.type = 'sawtooth';
-                    oscillator.frequency.setValueAtTime(180, audioContext.currentTime);
-                    oscillator.frequency.linearRampToValueAtTime(450, audioContext.currentTime + 2);
+                    oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+                    oscillator.frequency.linearRampToValueAtTime(350, audioContext.currentTime + 2);
                     
                     const gainNode = audioContext.createGain();
-                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.4, audioContext.currentTime + 2);
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 2);
                     
                     oscillator.connect(gainNode);
                     gainNode.connect(audioContext.destination);
                     
                     oscillator.start();
                     oscillator.stop(audioContext.currentTime + 2);
-                } catch (e) {
-                    console.log("Аудио не поддерживается");
-                }
+                } catch(e) {}
             }
             
             function playPhase3Sound() {
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    
                     const oscillator = audioContext.createOscillator();
                     oscillator.type = 'square';
-                    oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
-                    oscillator.frequency.exponentialRampToValueAtTime(80, audioContext.currentTime + 0.3);
+                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.3);
                     
                     const gainNode = audioContext.createGain();
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
                     gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
                     
                     oscillator.connect(gainNode);
@@ -977,23 +1056,21 @@
                     
                     oscillator.start();
                     oscillator.stop(audioContext.currentTime + 0.3);
-                } catch (e) {
-                    console.log("Аудио не поддерживается");
-                }
+                } catch(e) {}
             }
             
             function playPhase4Sound() {
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     
-                    for (let i = 0; i < 12; i++) {
+                    for (let i = 0; i < 10; i++) {
                         setTimeout(() => {
                             const oscillator = audioContext.createOscillator();
                             oscillator.type = 'sine';
-                            oscillator.frequency.setValueAtTime(523.25 + i * 80, audioContext.currentTime);
+                            oscillator.frequency.setValueAtTime(500 + i * 40, audioContext.currentTime);
                             
                             const gainNode = audioContext.createGain();
-                            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                            gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
                             gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
                             
                             oscillator.connect(gainNode);
@@ -1001,82 +1078,81 @@
                             
                             oscillator.start();
                             oscillator.stop(audioContext.currentTime + 0.2);
-                        }, i * 250);
+                        }, i * 280);
                     }
-                } catch (e) {
-                    console.log("Аудио не поддерживается");
-                }
+                } catch(e) {}
             }
             
             function playPhase5Sound() {
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(60, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(20, audioContext.currentTime + 0.5);
                     
-                    const oscillator1 = audioContext.createOscillator();
-                    oscillator1.type = 'sine';
-                    oscillator1.frequency.setValueAtTime(70, audioContext.currentTime);
-                    oscillator1.frequency.exponentialRampToValueAtTime(25, audioContext.currentTime + 0.5);
+                    const gainNode = audioContext.createGain();
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
                     
-                    const gainNode1 = audioContext.createGain();
-                    gainNode1.gain.setValueAtTime(0.4, audioContext.currentTime);
-                    gainNode1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
                     
-                    oscillator1.connect(gainNode1);
-                    gainNode1.connect(audioContext.destination);
-                    
-                    oscillator1.start();
-                    oscillator1.stop(audioContext.currentTime + 0.5);
-                } catch (e) {
-                    console.log("Аудио не поддерживается");
-                }
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                } catch(e) {}
             }
             
             function playPhase6Sound() {
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     
-                    const frequencies = [523.25, 659.25, 783.99];
-                    
-                    frequencies.forEach((freq, i) => {
+                    [500, 600, 700].forEach((freq, i) => {
                         setTimeout(() => {
                             const oscillator = audioContext.createOscillator();
                             oscillator.type = 'sine';
                             oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
                             
                             const gainNode = audioContext.createGain();
-                            gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
                             
                             oscillator.connect(gainNode);
                             gainNode.connect(audioContext.destination);
                             
                             oscillator.start();
-                            oscillator.stop(audioContext.currentTime + 1.5);
-                        }, i * 80);
+                            oscillator.stop(audioContext.currentTime + 1);
+                        }, i * 100);
                     });
-                } catch (e) {
-                    console.log("Аудио не поддерживается");
-                }
+                } catch(e) {}
             }
             
-            // Обработчики событий
+            // ОБРАБОТЧИКИ СОБЫТИЙ
             function handleStart(e) {
-                if (animationRunning) return;
+                e.preventDefault();
+                e.stopPropagation();
                 
-                // Вибрация (если поддерживается)
-                if (navigator.vibrate) {
-                    navigator.vibrate([50, 30, 50]);
-                }
-                
-                start10SecondAnimation();
+                console.log("Событие получено:", e.type);
+                startAnimation();
+                return false;
             }
             
-            // Добавляем обработчики для сенсорных устройств
-            document.addEventListener('click', handleStart);
+            // Основной обработчик клика/касания
+            tapButton.addEventListener('click', handleStart);
+            tapButton.addEventListener('touchend', handleStart);
+            
+            // Также обрабатываем касание всего экрана
+            startScreen.addEventListener('click', handleStart);
+            startScreen.addEventListener('touchend', handleStart);
+            
+            // Предотвращаем стандартное поведение касаний
             document.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                handleStart(e);
+                if (e.target === tapButton || e.target === startScreen) {
+                    e.preventDefault();
+                }
             }, { passive: false });
+            
+            console.log("Скрипт загружен, устройство с тачскрином:", isTouchDevice());
         });
     </script>
 </body>
